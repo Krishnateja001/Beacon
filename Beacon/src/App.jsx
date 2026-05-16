@@ -109,7 +109,32 @@ export default function App() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100"></tbody>
-                {/* jobs.map((job)=>{<p>job.id</p>}) */}
+                {jobs.map((job) => (
+                  <tr key={job.id} className="hover:bg-slate-50">
+                    <td className="px-4 py-4">
+                      <p className="font-semibold text-slate-900">{job.name}</p>
+                      <p className="text-xs text-slate-500">
+                        {job.id} · {job.source}
+                      </p>
+                    </td>
+
+                    <td className="px-4 py-4">
+                      {job.status}
+                    </td>
+
+                    <td className="px-4 py-4 text-slate-600">
+                      {job.startedAt}
+                    </td>
+
+                    <td className="px-4 py-4 text-slate-600">
+                      {job.duration}
+                    </td>
+
+                    <td className="px-4 py-4 text-slate-600">
+                      {job.records}
+                    </td>
+                  </tr>
+                ))}
               </table>
 
             </div>
