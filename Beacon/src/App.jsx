@@ -1,3 +1,4 @@
+import { useState } from "react";
 const jobs = [
   {
     id: "PHRM-1001",
@@ -55,6 +56,19 @@ const jobs = [
     message: "Completed with 37 invalid claim rows",
   },
 ];
+function StatusPage({status}){
+ const styles={
+    Success: "bg-green-100 text-green-700",
+    Running: "bg-blue-100 text-blue-700",
+    Failed: "bg-red-100 text-red-700",
+    Queued: "bg-gray-100 text-gray-700",
+    Warning: "bg-yellow-100 text-yellow-700",
+ };
+ return (
+  <span className={`rounded-full px-3 py-1 text-xs font-semibold ${styles[status]}`}>{status}</span>
+ )
+}
+
 function Summarycard({title,value,subtitle}){
   return(
     <div className="rounded-2xl bg-white p-5 shadow-sm">
@@ -66,6 +80,7 @@ function Summarycard({title,value,subtitle}){
 }
 
 export default function App() {
+  const [selectedJob, setSelectedJob] = useState(jobs[0]);
   return (
     <div className="min-h-screen bg-slate-100 p-6">
       <div className="mx-auto max-w-7xl space-y-6">
@@ -110,7 +125,7 @@ export default function App() {
                 </thead>
                 <tbody className="divide-y divide-slate-100"></tbody>
                 {jobs.map((job) => (
-                  <tr key={job.id} className="hover:bg-slate-50">
+                  <tr key={job.id} onClick={()=>setSelectedJob(job)} className="hover:bg-slate-50">
                     <td className="px-4 py-4">
                       <p className="font-semibold text-slate-900">{job.name}</p>
                       <p className="text-xs text-slate-500">
@@ -119,7 +134,7 @@ export default function App() {
                     </td>
 
                     <td className="px-4 py-4">
-                      {job.status}
+                      <StatusPage status={job.status}/>
                     </td>
 
                     <td className="px-4 py-4 text-slate-600">
@@ -145,9 +160,29 @@ export default function App() {
               Job Details
             </h2>
 
-            <p className="mt-1 text-sm text-slate-500">
-              Select a job to view logs and metadata.
-            </p>
+            <div className="mt-5 space-y-4">
+              <div>
+                <p className="text-sm text-slate-500">Job Name</p>
+                <p className="font-semibold text-slate-900">{selectedJob.name}</p>
+              </div>
+
+              <div>
+                <p className="text-sm text-slate-500">Source</p>
+                <p className="font-semibold text-slate-900">{selectedJob.source}</p>
+              </div>
+
+              <div>
+                <p className="text-sm text-slate-500">Target Table</p>
+                <p className="font-mono text-sm text-slate-900">
+                  {selectedJob.targetTable}
+                </p>
+              </div>
+
+              <div>
+                <p className="text-sm text-slate-500">Message</p>
+                <p className="font-semibold text-slate-900">{selectedJob.message}</p>
+              </div>
+            </div>
           </aside>
 
         </main>
