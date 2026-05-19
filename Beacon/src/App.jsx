@@ -56,6 +56,9 @@ const jobs = [
     message: "Completed with 37 invalid claim rows",
   },
 ];
+
+
+
 function StatusPage({status}){
  const styles={
     Success: "bg-green-100 text-green-700",
@@ -81,6 +84,21 @@ function Summarycard({title,value,subtitle}){
 
 export default function App() {
   const [selectedJob, setSelectedJob] = useState(jobs[0]);
+  const [searchText,setSearchText]=useState("");
+  const [statusFilter,setStatusFilter]=useState("All");
+
+  const filteredJobs=jobs.filter((job)=>{
+    const matchesSearch=
+    job.name.toLowerCase().includes(searchText.toLowerCase())||
+    job.id.toLowerCase().includes(searchText.toLowerCase())||
+    job.source.toLowerCase().includes(searchText.toLowerCase());
+
+    const matchesStatus=
+    statusFilter==="All" || job.status === statusFilter;
+
+    return matchesStatus && matchesSearch;
+  })
+
   return (
     <div className="min-h-screen bg-slate-100 p-6">
       <div className="mx-auto max-w-7xl space-y-6">
@@ -112,6 +130,28 @@ export default function App() {
             <p className="mt-1 text-sm text-slate-500">
               Latest pharma data pipeline executions.
             </p>
+            <div className="mt-5 flex flex-col gap-3 md:flex-row">
+              <input
+              type="text"
+              placeholder="Search jobs"
+              value={searchText}
+              onChange={(e)=> setSearchText(e.target.value)}
+              className="rounded-xl border border-slate-200 px-4 py-2 text-sm"
+              />
+              <select
+                value={statusFilter}
+                onChange={(e)=> setStatusFilter(e.target.value)}
+                className="rounded-xl border border-slate-200 px-4 py-2 text-sm"
+              >
+                  <option>All</option>
+                  <option>Success</option>
+                  <option>Running</option>
+                  <option>Failed</option>
+                  <option>Queued</option>
+                  <option>Warning</option>
+                </select>
+
+            </div>
             <div className="mt-5 overflow-hidden rounded-xl border border-slate-200">
               <table className="w-full text-left text-sm">
                 <thead className="bg-slate-100 text-xs uppercase text-slate-500">
@@ -124,7 +164,7 @@ export default function App() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100"></tbody>
-                {jobs.map((job) => (
+                {filteredJobs.map((job) => (
                   <tr key={job.id} onClick={()=>setSelectedJob(job)} className="hover:bg-slate-50">
                     <td className="px-4 py-4">
                       <p className="font-semibold text-slate-900">{job.name}</p>
